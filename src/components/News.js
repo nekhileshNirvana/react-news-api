@@ -3,6 +3,7 @@ import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
 import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Container, Row, Col } from 'react-bootstrap';
 
 const News = ({ country = "in", pageSize = 4, category = "general" }) => {
   const [articles, setArticles] = useState([]);
@@ -11,7 +12,7 @@ const News = ({ country = "in", pageSize = 4, category = "general" }) => {
   const [totalResults, setTotalResults] = useState(0);
 
   const updatePage = async () => {
-    const url = `http://localhost:8080/articles`;
+    const url = `http://localhost:8080/articles/${category}`;
 
     try {
       let data = await fetch(url);
@@ -25,7 +26,7 @@ const News = ({ country = "in", pageSize = 4, category = "general" }) => {
 
   useEffect(() => {
     const fetchNewsData = async () => {
-      const url = `http://localhost:8080/articles`;
+      const url = `http://localhost:8080/articles/${category}`;
       setLoading(true);
 
       try {
@@ -55,38 +56,36 @@ const News = ({ country = "in", pageSize = 4, category = "general" }) => {
   };
 
   return (
-    <>
+    <div>
       <h1 className="text-center">
         <u>Headlines</u>
       </h1>
-      {loading && <Spinner />}
+      {loading && <Spinner animation="border" />}
       <InfiniteScroll
         dataLength={articles.length}
         next={fetchMoreData}
         hasMore={articles.length !== totalResults}
-        loader={<Spinner />}
+        loader={<Spinner animation="border" />}
       >
-        <div className="container">
-          <div className="row">
+        <Container>
+          <Row>
             {articles.map((element) => (
-              <div className="col my-2" key={element.url}>
+              <Col className="my-2" key={element.url}>
                 <NewsItem
                   title={element.title ? element.title.slice(0, 45) : ""}
-                  description={
-                    element.description ? element.description.slice(0, 88) : ""
-                  }
+                  description={element.description ? element.description.slice(0, 88) : ""}
                   imageUrl={element.urlToImage}
                   newsUrl={element.url}
                   author={element.author}
                   date={element.publishedAt}
                   source={element.source.name}
                 />
-              </div>
+              </Col>
             ))}
-          </div>
-        </div>
+          </Row>
+        </Container>
       </InfiniteScroll>
-    </>
+    </div>
   );
 };
 

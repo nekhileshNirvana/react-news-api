@@ -3,6 +3,9 @@ import Navbar from './components/Navbar';
 import News from './components/News';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import React from 'react';
+import Form from './components/Form';
+
+
 
 export default function App() {
   return (
@@ -13,7 +16,7 @@ export default function App() {
           <Route
             exact
             path="/"
-            element={<News key="general" pageSize={8} country="in" category="general" />}
+            element={<News key="" pageSize={8} country="in" category="" />}
           />
           <Route
             exact
@@ -25,11 +28,7 @@ export default function App() {
             path="/entertainment"
             element={<News key="entertainment" pageSize={8} country="in" category="entertainment" />}
           />
-          <Route
-            exact
-            path="/general"
-            element={<News key="general" pageSize={8} country="in" category="general" />}
-          />
+         
           <Route
             exact
             path="/health"
@@ -49,6 +48,11 @@ export default function App() {
             exact
             path="/technology"
             element={<News key="technology" pageSize={8} country="in" category="technology" />}
+          />
+          <Route
+            exact
+            path="/form"
+            element={<Form/>}
           />
         </Routes>
       </BrowserRouter>

@@ -1,53 +1,75 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { Navbar, Container, Nav, Button } from 'react-bootstrap';
 
-export default function Navbar() {
+export default function CustomNavbar() {
   return (
-    <div>
-      <nav className="navbar bg-dark navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
-        <div className="container-fluid">
-          <Link className="navbar-brand" to="/">STNews</Link>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="/navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/">Home</Link>
-              </li>
-              {/* <li className="nav-item">
-                <link className="nav-link" to="/">About</Link>
-              </li> */}
-              <li className="nav-item">
-                <Link className="nav-link" to="/business">business</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/entertainment">entertainment</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/general">general</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/health">health</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/science">science</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/sport">sport</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/technology">technology</Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
+    <Navbar bg="dark" variant="dark" expand="lg" className="bg-body-tertiary">
+      <Container>
+        <Navbar.Brand as={Link} to="/" style={{ color: 'black' }}>STNews</Navbar.Brand>
+        <Navbar.Toggle aria-controls="navbarSupportedContent" />
+        <Navbar.Collapse id="navbarSupportedContent">
+          <Nav className="me-auto">
+            <Nav.Link
+              as={Link}
+              to="/"
+              style={{ color: 'black' }} // Set the color to black
+            >
+              Home
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/business"
+              style={{ color: 'black' }} // Set the color to black
+            >
+              Business
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/entertainment"
+              style={{ color: 'black' }} // Set the color to black
+            >
+              Entertainment
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/health"
+              style={{ color: 'black' }} // Set the color to black
+            >
+              Health
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/science"
+              style={{ color: 'black' }} // Set the color to black
+            >
+              Science
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/sports"
+              style={{ color: 'black' }} // Set the color to black
+            >
+              Sports
+            </Nav.Link>
+            <Nav.Link
+              as={Link}
+              to="/technology"
+              style={{ color: 'black' }} // Set the color to black
+            >
+              Technology
+            </Nav.Link>
+          </Nav>
+          <Link to="/Form">
+            <Button variant="primary">Create</Button>
+          </Link>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
 
-Navbar.propTypes = {
+CustomNavbar.propTypes = {
   prop: PropTypes.any,
 };

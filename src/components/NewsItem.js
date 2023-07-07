@@ -1,21 +1,22 @@
 import React from "react";
+import { Card, Badge } from "react-bootstrap";
 
 const NewsItem = ({ title, description, imageUrl, newsUrl, author, date, source }) => {
   return (
     <div>
-      <div className="card" style={{ height: "30rem", width: "18rem" }}>
-        <img
+      <Card style={{ height: "30rem", width: "18rem" }}>
+        <Card.Img
+          variant="top"
           src={
             !imageUrl
               ? "https://images.hindustantimes.com/tech/img/2023/04/28/1600x900/Sun_1677738983844_1682654962091.jpg"
               : imageUrl
           }
-          className="card-img-top"
           style={{ height: "10rem" }}
           alt="..."
         />
 
-        <div className="card-body d-flex flex-column justify-content-between align-items-center">
+        <Card.Body className="d-flex flex-column justify-content-between align-items-center">
           <p className="card-text fs-6">
             Author:{" "}
             <cite title="Source Title">
@@ -23,14 +24,11 @@ const NewsItem = ({ title, description, imageUrl, newsUrl, author, date, source 
             </cite>
             <small className="text-body-secondary">{date}</small>
           </p>
-          <span
-            className="position-absolute top-0 translate-middle badge rounded-pill bg-danger"
-            style={{ left: "80%" }}
-          >
+          <Badge pill bg="danger" className="position-absolute top-0 translate-middle" style={{ left: "80%" }}>
             {source}
-          </span>
-          <h5 className="card-title">{title}...</h5>
-          <p className="card-text">{description}...</p>
+          </Badge>
+          <Card.Title>{title}...</Card.Title>
+          <Card.Text>{description}...</Card.Text>
           <a
             href={newsUrl}
             target="_blank"
@@ -40,8 +38,8 @@ const NewsItem = ({ title, description, imageUrl, newsUrl, author, date, source 
           >
             Read More
           </a>
-        </div>
-      </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 };
