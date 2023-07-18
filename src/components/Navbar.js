@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Navbar, Container, Nav, Button } from "react-bootstrap";
 
 export default function CustomNavbar() {
@@ -16,6 +16,7 @@ export default function CustomNavbar() {
     // Redirect the user to the Google OAuth 2.0 authorization endpoint
     window.location.href = authorizationUrl;
   };
+
   
 
   return (
