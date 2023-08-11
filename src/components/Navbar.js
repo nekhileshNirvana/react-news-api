@@ -1,92 +1,99 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import PropTypes from "prop-types";
-import { Link, useHistory } from "react-router-dom";
-import { Navbar, Container, Nav, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Navbar, Container, Nav, Button, NavDropdown } from "react-bootstrap";
+import "./Navbar.css"
+import Cookies from 'js-cookie'
 
 export default function CustomNavbar() {
-
-  const handleSignInClick = () => {
+  
+  const handleSignInClick = async () => {
     const clientId = '51200461855-qtjkic8mekk4g9l5tt171k4bk6675jaj.apps.googleusercontent.com';
-    const redirectUri = 'http://localhost:8080/auth/google/callback'; // Update with your desired redirect URL
+    const redirectUri = 'http://localhost:8080/auth/google/callback';
     const scope = 'profile email';
   
-    // Construct the authorization URL
     const authorizationUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
   
     // Redirect the user to the Google OAuth 2.0 authorization endpoint
     window.location.href = authorizationUrl;
+    // After successful login
+Cookies.set('loggedIn', 'true');
+
+
+  };
+  
+  const isLoggedIn = Cookies.get('loggedIn') === 'true';
+
+      
+  
+  
+  const handleSignOut = () => {
+    // After successful logout
+Cookies.remove('loggedIn');
+
+    fetch("http://localhost:3000/logout", {
+      method: "POST",
+      credentials: "include", // Include cookies in the request
+    })
+      .then(() => {
+        // Redirect to a logged-out state (e.g., home page)
+        window.location.href = "/";
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  
-
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Navbar.Brand as={Link} to="/" style={{ color: "black" }}>
-          STNews
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbarSupportedContent" />
-        <Navbar.Collapse id="navbarSupportedContent">
-          <Nav className="me-auto">
-            <Nav.Link
-              as={Link}
-              to="/"
-              style={{ color: "black" }} // Set the color to black
-            >
-              Home
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/business"
-              style={{ color: "black" }} // Set the color to black
-            >
+    <Navbar bg="dark" variant="dark" expand="lg" className="custom-navbar">
+    <Container>
+      <Navbar.Brand as={Link} to="/" className="navbar-brand">
+        STNews
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls="navbarSupportedContent" />
+      <Navbar.Collapse id="navbarSupportedContent">
+        <Nav className="me-auto">
+          <Nav.Link as={Link} to="/" className="nav-link">
+            Home
+          </Nav.Link>
+          <NavDropdown title="Filter" id="basic-nav-dropdown" className="nav-dropdown">
+            <NavDropdown.Item as={Link} to="/business">
               Business
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/entertainment"
-              style={{ color: "black" }} // Set the color to black
-            >
+            </NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/entertainment">
               Entertainment
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/health"
-              style={{ color: "black" }} // Set the color to black
-            >
+            </NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/health">
               Health
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/science"
-              style={{ color: "black" }} // Set the color to black
-            >
+            </NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/science">
               Science
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/sports"
-              style={{ color: "black" }} // Set the color to black
-            >
+            </NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/sports">
               Sports
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/technology"
-              style={{ color: "black" }} // Set the color to black
-            >
+            </NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/technology">
               Technology
-            </Nav.Link>
-          </Nav>
-          <button onClick={handleSignInClick}>
-      Sign in with Google
-    </button>
-          <Link to="/Form">
-            <Button variant="primary">Create</Button>
-          </Link>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+            </NavDropdown.Item>
+          </NavDropdown>
+        </Nav>
+        
+            {isLoggedIn?(<button onClick={handleSignOut} className="sign-out-button">
+              Sign Out
+            </button>)
+              :
+            (<button onClick={handleSignInClick} className="sign-in-button">
+              Sign in with Google
+            </button>)}
+          
+        {isLoggedIn?(<Link to="/Form">
+          <Button variant="primary" className="create-button">
+            Create
+          </Button>
+        </Link>):null}
+      </Navbar.Collapse>
+    </Container>
+  </Navbar>
   );
 }
 

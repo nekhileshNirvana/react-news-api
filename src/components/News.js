@@ -12,7 +12,7 @@ const News = ({ country = "in", pageSize = 4, category = "general" }) => {
   const [totalResults, setTotalResults] = useState(0);
 
   const updatePage = async () => {
-    const url = `http://localhost:8080/articles/${category}`;
+    const url = `http://localhost:8080/articles/search/${category}`;
 
     try {
       let data = await fetch(url);
@@ -26,7 +26,7 @@ const News = ({ country = "in", pageSize = 4, category = "general" }) => {
 
   useEffect(() => {
     const fetchNewsData = async () => {
-      const url = `http://localhost:8080/articles/${category}`;
+      const url = `http://localhost:8080/articles/search/${category}`;
       setLoading(true);
 
       try {
@@ -70,7 +70,7 @@ const News = ({ country = "in", pageSize = 4, category = "general" }) => {
         <Container>
           <Row>
             {articles.map((element) => (
-              <Col className="my-2" key={element.url}>
+              <Col className="my-2" key={element.id}>
                 <NewsItem
                   title={element.title ? element.title.slice(0, 45) : ""}
                   description={element.description ? element.description.slice(0, 88) : ""}

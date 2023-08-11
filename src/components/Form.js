@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col, Modal } from 'react-bootstrap';
+import "./Form.css";
 
 const MyForm = () => {
   const [categories, setCategories] = useState([]);
@@ -9,6 +10,7 @@ const MyForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [submissionStatus, setSubmissionStatus] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -30,7 +32,7 @@ const MyForm = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:8080/category");
+        const response = await fetch("http://localhost:8080/categories/search");
         const data = await response.json();
 
         // Set the fetched categories in the state
@@ -46,7 +48,7 @@ const MyForm = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:8080/language");
+        const response = await fetch("http://localhost:8080/languages/search");
         const data = await response.json();
 
         // Set the fetched categories in the state
@@ -62,7 +64,7 @@ const MyForm = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:8080/source");
+        const response = await fetch("http://localhost:8080/sources/search");
         const data = await response.json();
 
         // Set the fetched categories in the state
@@ -78,7 +80,7 @@ const MyForm = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:8080/country");
+        const response = await fetch("http://localhost:8080/countries/search");
         const data = await response.json();
 
         // Set the fetched categories in the state
@@ -126,7 +128,7 @@ const MyForm = () => {
     console.log(formData);
   
     try {
-      const response = await fetch("http://localhost:8080/articles", {
+      const response = await fetch("http://localhost:8080/articles/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -164,6 +166,10 @@ const MyForm = () => {
     setSource("");
     setCategory("");
     setLanguage("");
+  };
+
+  const handleFileChange = (event) => {
+    setSelectedFiles([...event.target.files]);
   };
   
   return (
@@ -302,13 +308,23 @@ const MyForm = () => {
               >
                 <option value="">Select a language</option>
                 {languages.map((element) => (
-                  <option key={element.lan_id} value={element.lan_name}>
-                    {element.lan_name}
+                  <option key={element.lang_id} value={element.lang_name}>
+                    {element.lang_name}
                   </option>
                 ))}
               </Form.Control>
             </Form.Group>
           </Col>
+        </Row>
+        <Row>
+        <label htmlFor="files">Select files:</label>
+      <input
+        type="file"
+        id="files"
+        name="files"
+        multiple
+        onChange={handleFileChange}
+      />
         </Row>
         <div className="text-center mt-4">
           <Button variant="primary" type="submit">
