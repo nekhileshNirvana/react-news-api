@@ -1,49 +1,18 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav, Button, NavDropdown } from "react-bootstrap";
 import "./Navbar.css"
 import Cookies from 'js-cookie'
+import { useOAuth2 } from "react-oauth2";
+
 
 export default function CustomNavbar() {
-  
-  const handleSignInClick = async () => {
-    const clientId = '51200461855-qtjkic8mekk4g9l5tt171k4bk6675jaj.apps.googleusercontent.com';
-    const redirectUri = 'http://localhost:8080/auth/google/callback';
-    const scope = 'profile email';
-  
-    const authorizationUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
-  
-    // Redirect the user to the Google OAuth 2.0 authorization endpoint
-    window.location.href = authorizationUrl;
-    // After successful login
-Cookies.set('loggedIn', 'true');
 
-
+  const handleLoginClick = () => {
+    // Redirect the user to the OAuth2 authentication page
+    window.location.href = 'http://localhost:8080/auth/google';
   };
-  
-  const isLoggedIn = Cookies.get('loggedIn') === 'true';
-
-      
-  
-  
-  const handleSignOut = () => {
-    // After successful logout
-Cookies.remove('loggedIn');
-
-    fetch("http://localhost:3000/logout", {
-      method: "POST",
-      credentials: "include", // Include cookies in the request
-    })
-      .then(() => {
-        // Redirect to a logged-out state (e.g., home page)
-        window.location.href = "/";
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="custom-navbar">
     <Container>
@@ -78,19 +47,13 @@ Cookies.remove('loggedIn');
           </NavDropdown>
         </Nav>
         
-            {isLoggedIn?(<button onClick={handleSignOut} className="sign-out-button">
-              Sign Out
-            </button>)
-              :
-            (<button onClick={handleSignInClick} className="sign-in-button">
-              Sign in with Google
-            </button>)}
+        <button onClick={handleLoginClick}>Login with Google</button>
           
-        {isLoggedIn?(<Link to="/Form">
+        <Link to="/Form">
           <Button variant="primary" className="create-button">
             Create
           </Button>
-        </Link>):null}
+        </Link>)
       </Navbar.Collapse>
     </Container>
   </Navbar>
