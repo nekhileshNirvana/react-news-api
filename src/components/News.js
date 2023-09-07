@@ -32,7 +32,7 @@ const News = ({ country = "in", pageSize = 4, category = "general" }) => {
       try {
         let data = await fetch(url);
         let parsedData = await data.json();
-        console.log(parsedData);
+       
 
         if (parsedData && parsedData.length > 0) {
           setArticles(parsedData);
