@@ -1,15 +1,15 @@
 import './App.css';
-import Navbar from './components/Navbar';
-import News from './components/News';
+import Navbar from './components/Navbar/Navbar';
+import News from './components/News/News';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import React,{useState, useEffect} from 'react';
-import Form from './components/Form';
+import Form from './components/Form/Form';
 
 
-
-export default function App() {
+const App = () => {
 
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState({});
 
   useEffect(() => {
     const getUser = () => {
@@ -28,6 +28,7 @@ export default function App() {
         })
         .then((resObject) => {
           setUser(resObject.user);
+          setRole(resObject.role[0]);
         })
         .catch((err) => {
           console.log(err);
@@ -35,13 +36,14 @@ export default function App() {
     };
     getUser();
   }, []);
-
-  console.log(user);
+ 
 
   return (
+
     <div>
       <BrowserRouter>
-        <Navbar user = {user}/>
+
+        <Navbar user = {user} role = {role}/>
         <Routes>
           <Route
             exact
@@ -85,7 +87,10 @@ export default function App() {
             element={<Form/>}
           />
         </Routes>
+   
       </BrowserRouter>
     </div>
   );
 }
+
+export default App;

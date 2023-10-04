@@ -10,24 +10,13 @@ const MyForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [submissionStatus, setSubmissionStatus] = useState('');
-  const [selectedFiles, setSelectedFiles] = useState([]);
+
 
   const handleModalClose = () => {
     setShowModal(false);
   };
 
-  const saveChanges = () => {
-    setAuthor("");
-    setTitle("");
-    setDescription("");
-    setContent("");
-    setUrl("");
-    setUrlToImage("");
-    setCountry("");
-    setSource("");
-    setCategory("");
-    setLanguage("");
-  }
+
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -105,9 +94,45 @@ const MyForm = () => {
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
   const [language, setLanguage] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  function uuidv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+      (
+        c ^
+        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+      ).toString(16)
+    );
+  };
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!selectedFile) {
+      alert('Please select a file.');
+      return;
+    }
+
+    let postid = uuidv4();
+    let file = selectedFile;
+    let blob = file.slice(0, file.size);
+    let newFile = new File([blob],`${postid}`);
+
+    const formFile = new FormData();
+formFile.append('file', newFile);
+
+
+    fetch('http://localhost:8080/upload', {
+      method: 'POST',
+      body: formFile,
+    })
+      .then((res) => res.text())
+      .then(() => {
+      });
   
     // Prepare the form data
     const currentDate = new Date();
@@ -168,9 +193,7 @@ const MyForm = () => {
     setLanguage("");
   };
 
-  const handleFileChange = (event) => {
-    setSelectedFiles([...event.target.files]);
-  };
+ 
   
   return (
     <div className="container" style={{ width: '60vw' }}>
@@ -318,13 +341,7 @@ const MyForm = () => {
         </Row>
         <Row>
         <label htmlFor="files">Select files:</label>
-      <input
-        type="file"
-        id="files"
-        name="files"
-        multiple
-        onChange={handleFileChange}
-      />
+        <input type="file" name="file" onChange={handleFileChange} />
         </Row>
         <div className="text-center mt-4">
           <Button variant="primary" type="submit">
