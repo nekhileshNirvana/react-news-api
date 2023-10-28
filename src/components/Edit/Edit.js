@@ -208,7 +208,7 @@ export const Edit = () => {
   const deleteFiles = async (fileNames) => {
     try {
       for (const fileName of fileNames) {
-        const response = await axios.delete(`http://localhost:8080/delete/${fileName}`);
+        const response = await axios.delete(`http://localhost:8080/gcpBucket/delete/${fileName}`);
         if (response.status === 200) {
           console.log(`File ${fileName} deleted successfully`);
         }
