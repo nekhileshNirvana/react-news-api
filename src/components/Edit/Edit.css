@@ -1,0 +1,46 @@
+/* Style for the list of files */
+.fileList {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  /* Style for each file */
+  .fileView {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+  }
+  
+  /* Style for file name */
+  .fileName {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Style for delete button */
+  .deleteButton {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 5px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  /* Style for download button */
+  .downloadButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 5px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  

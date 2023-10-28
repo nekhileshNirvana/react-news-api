@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col, Modal } from "react-bootstrap";
-import "./Form.css";
+import { useParams } from "react-router-dom"; // Use useParams to get the article ID from the URL
+import axios from "axios"; // Import Axios if you prefer to use it
+import './Edit.css'
 
-const MyForm = () => {
+export const Edit = () => {
+  const { articleId } = useParams(); // Get the article ID from the URL
+
   const [categories, setCategories] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [countries, setCountries] = useState([]);
@@ -10,10 +14,6 @@ const MyForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [submissionStatus, setSubmissionStatus] = useState("");
-
-  const handleModalClose = () => {
-    setShowModal(false);
-  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -79,6 +79,7 @@ const MyForm = () => {
     fetchCategories();
   }, []);
 
+  // Define state variables for form fields
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -89,56 +90,143 @@ const MyForm = () => {
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
   const [language, setLanguage] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileNames, setFileNames] = useState([]);
+  
 
-  const handleFileChange = (event) => {
-    setSelectedFile(Array.from(event.target.files));
+  const [files, setFiles] = useState([]);
+  // Replace with the folder name you want to fetch
+
+  useEffect(() => {
+    fetch(`http://localhost:8080/upload/${title}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setFiles(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, [title]);
+  
+
+  // Fetch the article data by ID when the component mounts
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/articles/search/${articleId}`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Credentials": true,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch article");
+        }
+
+        const data = await response.json();
+
+        // Check if data exists and has the expected properties before setting state
+        if (data && data.author) {
+          setAuthor(data.author);
+        } else {
+          console.error("Author data is missing");
+        }
+
+        if (data && data.title) {
+          setTitle(data.title);
+        } else {
+          console.error("Title data is missing");
+        }
+
+        if (data && data.description) {
+          setDescription(data.description);
+        } else {
+          console.error("Description data is missing");
+        }
+
+        if (data && data.content) {
+          setContent(data.content);
+        } else {
+          console.error("Content data is missing");
+        }
+
+        if (data && data.url) {
+          setUrl(data.url);
+        } else {
+          console.error("URL data is missing");
+        }
+
+        if (data && data.urlToImage) {
+          setUrlToImage(data.urlToImage);
+        } else {
+          console.error("URL to Image data is missing");
+        }
+
+        if (data && data.country) {
+          setCountry(data.country);
+        } else {
+          console.error("Country data is missing");
+        }
+
+        if (data && data.source) {
+          setSource(data.source);
+        } else {
+          console.error("Source data is missing");
+        }
+
+        if (data && data.category) {
+          setCategory(data.category);
+        } else {
+          console.error("Category data is missing");
+        }
+
+        if (data && data.language) {
+          setLanguage(data.language);
+        } else {
+          console.error("Language data is missing");
+        }
+      } catch (error) {
+        console.error("Failed to fetch article:", error);
+      }
+    };
+
+    fetchArticle();
+  }, [articleId]);
+
+  const handelFileName = (fileName) => {
+    // Add the fileName to the fileNames array
+    setFileNames((prevNames) => [...prevNames, fileName]);
+  }  
+  console.log(fileNames);
+
+  const deleteFiles = async (fileNames) => {
+    try {
+      for (const fileName of fileNames) {
+        const response = await axios.delete(`http://localhost:8080/delete/${fileName}`);
+        if (response.status === 200) {
+          console.log(`File ${fileName} deleted successfully`);
+        }
+      }
+    } catch (error) {
+      console.error('Error deleting files:', error);
+    }
   };
 
+  // Function to handle form submission for editing an article
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedFile) {
-      alert("Please select a file.");
-      return;
-    }
-
-    // let postid = uuidv4();
-
-    const formFile = new FormData();
-    for (let i = 0; i < selectedFile.length; i++) {
-      const file = selectedFile[i];
-      const blob = new Blob([file], { type: file.type });
-      formFile.append("file", blob, file.name);
-    }
-
-    fetch(`http://localhost:8080/upload/${title}`, {
-      method: "POST",
-      body: formFile,
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return res.text();
-      })
-      .then((response) => {
-        // Handle the successful response
-        console.log("Success:", response);
-        setSelectedFile(null)
-      })
-      .catch((error) => {
-        // Handle errors here
-        console.error("Fetch error:", error);
-      });
-
     // Prepare the form data
-    const currentDate = new Date();
     const formData = {
       author,
       content,
       description,
-      publishedAt: currentDate.toISOString(), // Convert to ISO 8601 format
       title,
       url,
       urlToImage,
@@ -151,27 +239,30 @@ const MyForm = () => {
     console.log(formData);
 
     try {
-      const response = await fetch("http://localhost:8080/articles/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // Send a PUT request to update the article
+      const response = await fetch(
+        `http://localhost:8080/articles/update/${articleId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
-        console.log("Article data saved");
+        console.log("Article updated successfully");
         setShowModal(true);
         setSubmissionStatus("success");
-        setModalMessage("Form submitted successfully!");
+        setModalMessage("Article updated successfully!");
+        deleteFiles(fileNames);
+        
       } else {
-        console.error("Failed to save article data:", response.status);
+        console.error("Failed to update the article:", response.status);
         setShowModal(true);
         setSubmissionStatus("error");
-        setModalMessage(
-          "Form submission failed field was empty. Please try again."
-        );
-        // Additional error handling if needed
+        setModalMessage("Failed to update the article. Please try again.");
       }
     } catch (error) {
       console.error("Network error:", error);
@@ -179,24 +270,32 @@ const MyForm = () => {
       setSubmissionStatus("error");
       setModalMessage("An unexpected error occurred. Please try again later.");
     }
-
-    // Reset the form fields
-    setAuthor("");
-    setTitle("");
-    setDescription("");
-    setContent("");
-    setUrl("");
-    setUrlToImage("");
-    setCountry("");
-    setSource("");
-    setCategory("");
-    setLanguage("");
   };
+
+  
+  const handelDelete = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:8080/articles/delete/${articleId}`); // Replace with your API endpoint
+
+      if (response.status === 200) {
+        console.log(response.data.message);
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data.error);
+      }
+    }
+  };
+
+  const handelDownoad = async (fileName) => {
+    const url = `https://storage.googleapis.com/news_app/${fileName}`;
+    window.open(url);
+  }
 
   return (
     <div className="container" style={{ width: "60vw" }}>
       <Form onSubmit={handleSubmit} className="mt-4 border border-dark p-4">
-        <h3 className="text-center">Create Article</h3>
+        <h3 className="text-center">Edit Article</h3>
         <Row>
           <Col>
             <Form.Group controlId="author">
@@ -274,7 +373,7 @@ const MyForm = () => {
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
               >
-                <option value="">Select a country</option>
+                <option value="">{country}</option>
                 {countries.map((element) => (
                   <option key={element.con_id} value={element.con_name}>
                     {element.con_name}
@@ -291,7 +390,7 @@ const MyForm = () => {
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
               >
-                <option value="">Select a source</option>
+                <option value="">{source}</option>
                 {sources.map((element) => (
                   <option key={element.company_id} value={element.company_name}>
                     {element.company_name}
@@ -310,7 +409,7 @@ const MyForm = () => {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
-                <option value="">Select a category</option>
+                <option value="">{category}</option>
                 {categories.map((element) => (
                   <option key={element.cat_id} value={element.cat_name}>
                     {element.cat_name}
@@ -327,7 +426,7 @@ const MyForm = () => {
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
-                <option value="">Select a language</option>
+                <option value="">{language}</option>
                 {languages.map((element) => (
                   <option key={element.lang_id} value={element.lang_name}>
                     {element.lang_name}
@@ -338,16 +437,45 @@ const MyForm = () => {
           </Col>
         </Row>
         <Row>
-          <label htmlFor="files">Select files:</label>
-          <input type="file" name="file" multiple onChange={handleFileChange} />
+        <ul className="fileList">
+        {files.map((subArray, subArrayIndex) => (
+          <li key={subArrayIndex} className="fileView">
+            <span>
+              {subArray.map((obj, objIndex) => (
+                <span key={objIndex} className="fileName">
+                  {obj.metadata.name.split('/')[1]}
+                  <button
+                    className="deleteButton"
+                    onClick={() => handelFileName(obj.metadata.name)}
+                  >
+                    X
+                  </button>
+                  <button className="downloadButton" onClick={ () => handelDownoad(obj.metadata.name)}>Download</button>
+                </span>
+              ))}
+            </span>
+          </li>
+        ))}
+      </ul>
+
         </Row>
+        {/* Add more form fields for description, content, url, urlToImage, country, source, category, language */}
         <div className="text-center mt-4">
           <Button variant="primary" type="submit">
-            Submit
+            Update Article
+          </Button>
+          <Button
+            variant="primary"
+            type="submit"
+            style={{ margin: "10px" }}
+            onClick={handelDelete}
+          >
+            Delete Article
           </Button>
         </div>
       </Form>
-      <Modal show={showModal} onHide={handleModalClose} centered>
+      
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Form Submission {submissionStatus}</Modal.Title>
         </Modal.Header>
@@ -355,7 +483,7 @@ const MyForm = () => {
           <p>{modalMessage}</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleModalClose}>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
             Close
           </Button>
         </Modal.Footer>
@@ -363,5 +491,3 @@ const MyForm = () => {
     </div>
   );
 };
-
-export default MyForm;

@@ -6,7 +6,9 @@ export default function defineAbilityFor(role) {
   if (role.role_name === "guest") {
     cannot('add', 'Post'); // read-write access to everything
   } else if(role.role_name === "admin") {
-    can('add', 'Post') // read-only access to everything
+    can('add', 'Post');
+    can('delete','Post');
+    can('edit','Article'); // read-only access to everything
   }
 
   return build();

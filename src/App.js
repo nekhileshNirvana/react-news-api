@@ -4,6 +4,8 @@ import News from './components/News/News';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import React,{useState, useEffect} from 'react';
 import Form from './components/Form/Form';
+import { Files } from './components/Files/Files';
+import { Edit } from './components/Edit/Edit';
 
 
 const App = () => {
@@ -86,8 +88,11 @@ const App = () => {
             path="/form"
             element={<Form/>}
           />
+          <Route exact
+          path="/files"
+          element={<Files role = {role}/>}/>
+          <Route exact path='Edit/:articleId' element={<Edit/>}/>
         </Routes>
-   
       </BrowserRouter>
     </div>
   );

@@ -40,6 +40,9 @@
               <Nav.Link as={Link} to="/" className="nav-link">
                 Home
               </Nav.Link>
+              <Nav.Link as={Link} to="/Files" className="nav-link">
+                Files
+              </Nav.Link>
               <NavDropdown
                 title="Filter"
                 id="basic-nav-dropdown"

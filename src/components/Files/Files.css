@@ -1,0 +1,63 @@
+/* Custom styles for the table */
+table {
+    padding: 10px;
+  }
+  .table-custom {
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Adds a gap between rows */
+    width: 100%;
+  }
+  
+  /* Style the table header */
+  .table-custom thead {
+    background-color: #333;
+    color: white;
+  }
+  
+  /* Style the table rows */
+  .table-custom tbody tr {
+    background-color: lightblue; /* Light blue background color for rows */
+  
+  }
+  
+  /* Style the table cells (td) */
+  .table-custom tbody td {
+    padding: 10px; /* Add padding to cells for spacing */
+    background-color: rgba(6, 7, 7, 0); /* Transparent background color */
+  }
+  
+  /* Style the "Actions" column buttons */
+  .table-custom tbody td .btn {
+    margin-right: 5px; /* Add margin between buttons */
+  }
+  
+  /* Remove row lines */
+  .table-custom tbody tr {
+    border: none; /* Remove row borders */
+  }
+  
+  /* Style buttons within the "Actions" column */
+  .table-custom tbody td .btn-primary {
+    color: white;
+    border: none;
+    background-color: #007bff; /* Blue background color for primary button */
+  }
+  
+  .table-custom tbody td .btn-danger {
+    background-color: #dc3545; /* Red background color for danger button */
+    color: white;
+    border: none;
+  }
+  
+  .table-custom tbody td .btn-secondary {
+    background-color: #6c757d; /* Gray background color for secondary button */
+    color: white;
+    border: none;
+  }
+  
+  /* Hover effect on buttons */
+  .table-custom tbody td .btn:hover {
+    opacity: 0.8;
+    cursor: pointer;
+  }
+  
